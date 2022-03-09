@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
 	"rabbitmq-messenger/consumer"
@@ -18,13 +19,19 @@ func StartChat(room, nick string) {
 
 	chC := consumer.Connect(room)
 	defer chC.Close()
-
 	callClear()
-	consumer.Listen(chC, room, nick)
+	println("To exit press CTRL+C")
+
+	go consumer.Listen(chC, room, nick)
 
 	for {
 		msg, _ := reader.ReadString('\n')
+
 		msg = replacer(msg)
+		err := producer.Send(chP, room, nick, msg)
+		if err != nil {
+			fmt.Println("failed to send latest message")
+		}
 	}
 
 }
@@ -64,6 +71,6 @@ func callClear() {
 	if ok {                          //if we defined a clear func for that platform:
 		value() //we execute it
 	} else { //unsupported platform
-		panic("Your platform is unsupported! I can't clear terminal screen :(")
+		panic("your platform is unsupported! i can't clear terminal screen :(")
 	}
 }

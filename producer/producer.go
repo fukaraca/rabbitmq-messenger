@@ -16,23 +16,28 @@ func Connect(room string) *amqp.Channel {
 		log.Fatalln("failed to connect channel")
 	}
 
-	err = ch.ExchangeDeclare("chat", "direct", false, true, false, true, nil)
+	err = ch.ExchangeDeclare(room, "fanout", false, false, false, true, nil)
 	if err != nil {
 		log.Fatalf("exchange declaration failed")
 	}
 
-	_, err = ch.QueueDeclare(room, false, true, false, true, nil)
+	q, err := ch.QueueDeclare("", false, false, false, true, nil)
 	if err != nil {
 		log.Fatalf("queue declaration failed")
 	}
 
-	err = ch.QueueBind(room, "message", "chat", true, nil)
+	err = ch.QueueBind(q.Name, "", room, true, nil)
 	if err != nil {
-		log.Fatalf("queue declaration failed")
+		log.Fatalf("queue binding failed")
 	}
 	return ch
 }
 
-func Send(ch *amqp.Channel, room, nick string) {
-
+func Send(ch *amqp.Channel, room, nick, msg string) error {
+	msg = nick + " : " + msg
+	err := ch.Publish(room, "", false, false, amqp.Publishing{
+		ContentType: "text/plain",
+		Body:        []byte(msg),
+	})
+	return err
 }

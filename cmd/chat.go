@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"rabbitmq-messenger/lib"
 
 	"github.com/spf13/cobra"
 )
@@ -15,8 +16,13 @@ var chatCmd = &cobra.Command{
 	Use:     "chat ",
 	Short:   "command for connecting to a certain chat room with a nickname",
 	Example: `msgr chat -room <room_name> -nick <nickname>`,
+	//Args: ,
 	Run: func(cmd *cobra.Command, args []string) {
+		//open a channel
+		//declare queue
+		lib.StartChat(Room, Nickname)
 		fmt.Println("chat called", Room, Nickname)
+
 	},
 }
 var Room string

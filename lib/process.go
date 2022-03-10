@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+//StartChat connects to and initiates a pub/sub instance of RabbitMQ
 func StartChat(room, nick string) {
 	reader := bufio.NewReader(os.Stdin)
 
@@ -20,9 +21,10 @@ func StartChat(room, nick string) {
 	chC := consumer.Connect(room)
 	defer chC.Close()
 	callClear()
-	println("To exit press CTRL+C")
+	fmt.Println("Hello ", nick)
+	fmt.Printf("To exit room '%s' press CTRL+C \n", room)
 
-	go consumer.Listen(chC, room, nick)
+	go consumer.Listen(chC, nick)
 
 	for {
 		msg, _ := reader.ReadString('\n')
@@ -51,6 +53,7 @@ func replacer(text string) string {
 }
 
 var clear map[string]func() //create a map for storing clear funcs
+
 func init() {
 	clear = make(map[string]func()) //Initialize it
 	clear["linux"] = func() {

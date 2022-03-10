@@ -13,7 +13,7 @@ import (
 // chatCmd represents the chat command
 var chatCmd = &cobra.Command{
 	Use:     "chat ",
-	Short:   "command for connecting to a certain chat room with a nickname",
+	Short:   "command for connecting to an arbitrary chat room with a nickname. if room is not exist, it will be created then",
 	Example: `msgr chat --room <room_name> --nickname <nickname>`,
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -30,13 +30,5 @@ func init() {
 	chatCmd.MarkFlagRequired("room")
 	chatCmd.Flags().StringVarP(&Nickname, "nickname", "n", "", "please input the nickname for chatroom")
 	chatCmd.MarkFlagRequired("nickname")
-	// Here you will define your flags and configuration settings.
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// chatCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// chatCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

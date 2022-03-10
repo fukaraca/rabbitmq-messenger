@@ -11,6 +11,7 @@ import (
 var q amqp.Queue
 var label = color.New(color.BgGreen, color.Bold, color.FgHiWhite)
 
+//Connect connects and returns a new amqp channel with given 'room' named exchange and random named queue
 func Connect(room string) *amqp.Channel {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
@@ -39,7 +40,8 @@ func Connect(room string) *amqp.Channel {
 	return ch
 }
 
-func Listen(ch *amqp.Channel, room, nick string) error {
+//Listen consumes all messages that were subscribed
+func Listen(ch *amqp.Channel, nick string) error {
 
 	forever := make(chan bool)
 
@@ -51,9 +53,7 @@ func Listen(ch *amqp.Channel, room, nick string) error {
 	go func() {
 		for d := range del {
 			s := string(d.Body)
-			if strings.HasPrefix(s, nick+" :") {
-				//pubText.Printf("%s\n", s)
-			} else {
+			if !strings.HasPrefix(s, nick+" :") {
 				temp := strings.SplitAfterN(s, " :", 2)
 				label.Printf("%s", temp[0])
 				fmt.Printf("%s\n", temp[1])

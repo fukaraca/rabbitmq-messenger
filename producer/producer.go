@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+//Connect connects and returns a new amqp channel with given 'room' named exchange and random named queue
 func Connect(room string) *amqp.Channel {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
@@ -33,6 +34,7 @@ func Connect(room string) *amqp.Channel {
 	return ch
 }
 
+//Send publishes given message to given chat room
 func Send(ch *amqp.Channel, room, nick, msg string) error {
 	msg = nick + " : " + msg
 	err := ch.Publish(room, "", false, false, amqp.Publishing{

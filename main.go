@@ -8,5 +8,6 @@ package main
 import "rabbitmq-messenger/cmd"
 
 func main() {
+	//cli execution point
 	cmd.Execute()
 }
